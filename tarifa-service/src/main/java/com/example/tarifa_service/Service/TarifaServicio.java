@@ -13,17 +13,8 @@ public class TarifaServicio {
     @Autowired
     TarifaRepositorio tarifaRepositorio;
 
-    @Autowired
-    public TarifaServicio(TarifaRepositorio tarifaRepositorio) {
-        this.tarifaRepositorio = tarifaRepositorio;
-    }
-
     // Crear una tarifa
     public Tarifa NuevaTarifa(int numeroVueltas, int tiempoMax, Double precio, int duracionReserva, String tipo){
-
-        if(!(Objects.equals(tipo, "normal") || Objects.equals(tipo, "dia especial") || Objects.equals(tipo, "fin de semana"))){
-            throw new IllegalArgumentException("la tarifa debe ser de tipo normal, dia especial o fin de semana");
-        }
 
         if(tiempoMax < 0){
             throw new IllegalArgumentException(" El tiempo maximo permitido debe ser positivo");
@@ -53,10 +44,6 @@ public class TarifaServicio {
 
         if(tarifa == null){
             throw new IllegalArgumentException("La tarifa no existe");
-        }
-
-        if(!(Objects.equals(nuevoTipo, "normal") || Objects.equals(nuevoTipo, "dia especial") || Objects.equals(nuevoTipo, "fin de semana"))){
-            throw new IllegalArgumentException("la tarifa debe ser de tipo normal, dia especial o fin de semana");
         }
 
         if(nuevoTiempomax < 0){
