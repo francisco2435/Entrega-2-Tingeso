@@ -1,7 +1,6 @@
 package com.example.tarifaEsp_service.Controller;
 
 import com.example.tarifaEsp_service.Entity.TarifaEspecial;
-import com.example.tarifaEsp_service.Repository.TarifaEspecialRepositorio;
 import com.example.tarifaEsp_service.Service.TarifaEspecialServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/tarifaEspecial")
+@RequestMapping("/tarifaEsp")
 public class TarifaEspecialControlador {
     @Autowired
     private TarifaEspecialServicio tarifaEspecialServicio;
