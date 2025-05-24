@@ -16,6 +16,10 @@ public class TarifaServicio {
     // Crear una tarifa
     public Tarifa NuevaTarifa(int numeroVueltas, int tiempoMax, Double precio, int duracionReserva, String tipo){
 
+        if(!(Objects.equals(tipo, "normal"))){
+            throw new IllegalArgumentException("la tarifa debe ser de tipo dia especial o fin de semana");
+        }
+
         if(tiempoMax < 0){
             throw new IllegalArgumentException(" El tiempo maximo permitido debe ser positivo");
         }

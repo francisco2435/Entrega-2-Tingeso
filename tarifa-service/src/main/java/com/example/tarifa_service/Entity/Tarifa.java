@@ -1,9 +1,9 @@
 package com.example.tarifa_service.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.Data;
 
 
@@ -18,7 +18,7 @@ public class Tarifa {
     private int tiempoMax;
     private double precio;
     private int duracionReserva;
-    private String tipo; // Puede ser "normal", "especial", o "fin de semana"
+    private String tipo;
 
     public Tarifa() {
     }

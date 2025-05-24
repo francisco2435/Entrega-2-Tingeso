@@ -1,0 +1,31 @@
+package com.example.descuentoClienFrec_service.Controller;
+
+import com.example.descuentoClienFrec_service.Entity.DescuentoClienteFrecuente;
+import com.example.descuentoClienFrec_service.Service.DescuentoClienteFrecuenteServicio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@RestController
+@CrossOrigin("*")
+@RequestMapping("/descuentoClienteFrecuente")
+public class DescuentoClienteFrecuenteControlador {
+    @Autowired
+    private DescuentoClienteFrecuenteServicio descuentoClienteFrecuenteServicio;
+
+    @PostMapping("/obtenerDescuentosFrecuencia")
+    public ResponseEntity<List<Double>> hacerDescuentoFrecuencia(@RequestParam Long idReserva,
+                                                                    @RequestParam List<String> rutsIntegrantes,
+                                                                    @RequestParam LocalDate fechaReserva) {
+        return ResponseEntity.ok(descuentoClienteFrecuenteServicio.obtenerDescuentoFrecuencia(idReserva, rutsIntegrantes, fechaReserva));
+    }
+    
+    @GetMapping("/obtenerDescuentosCumpleaños")
+    public ResponseEntity<List<Double>> hacerDescuentoCumpleanios(@RequestParam List<String> rutsIntegrantes,
+                                                                  @RequestParam LocalDate fechaReserva){
+        return ResponseEntity.ok(descuentoClienteFrecuenteServicio.obtenerDescuentoCumpleanios(rutsIntegrantes, fechaReserva));
+    }
+}

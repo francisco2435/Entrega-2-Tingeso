@@ -42,4 +42,8 @@ public class UsuarioServicio {
         //Retornar el usuario logueado
         return usuario;
     }
+
+    public Usuario BuscarPorRut(String Rut) {
+        return usuarioRepositorio.findByRut(Rut);
+    }
 }

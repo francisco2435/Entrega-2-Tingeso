@@ -1,6 +1,6 @@
 package com.example.usuario_service.Entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
