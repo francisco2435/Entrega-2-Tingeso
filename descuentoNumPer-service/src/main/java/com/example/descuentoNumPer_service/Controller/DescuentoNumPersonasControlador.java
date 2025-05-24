@@ -1,6 +1,7 @@
 package com.example.descuentoNumPer_service.Controller;
 
 import com.example.descuentoNumPer_service.Service.DescuentoNumPersonasServicio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @RequestMapping("/descuentoNumPer")
 public class DescuentoNumPersonasControlador {
 
+    @Autowired
     DescuentoNumPersonasServicio descuentoNumPersonasServicio;
 
     @PostMapping("/nuevoDescuento")

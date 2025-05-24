@@ -27,7 +27,7 @@ public class DescuentoNumPersonasServicio {
         } else if (numPersonas >= 6 && numPersonas <= 10) {
             descuento = 0.20;
         } else if (numPersonas > 10 && numPersonas <= 15) {
-            descuento = 0.10;
+            descuento = 0.30;
         }
 
         List<Double> descuentos = new ArrayList<>();
