@@ -3,6 +3,7 @@ package com.example.tarifaEsp_service.Controller;
 import com.example.tarifaEsp_service.Entity.TarifaEspecial;
 import com.example.tarifaEsp_service.Service.TarifaEspecialServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +37,13 @@ public class TarifaEspecialControlador {
         return ResponseEntity.ok(tarifaEspecialServicio.obtenerTarifa(id));
     }
 
-    @GetMapping("/obtenerDescuentosCumpleaños")
-    public ResponseEntity<List<Double>> hacerDescuentoCumpleanios(@RequestParam List<String> rutsIntegrantes,
-                                                                  @RequestParam LocalDate fechaReserva){
-        return ResponseEntity.ok(tarifaEspecialServicio.obtenerDescuentoCumpleanios(rutsIntegrantes, fechaReserva));
+    @GetMapping("/obtenerDescuentosCumpleaneos")
+    public ResponseEntity<List<Double>> hacerDescuentoCumpleanios(
+            @RequestParam List<String> rutsIntegrantes,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaReserva) {
+
+        return ResponseEntity.ok(
+                tarifaEspecialServicio.obtenerDescuentoCumpleanios(rutsIntegrantes, fechaReserva)
+        );
     }
 }

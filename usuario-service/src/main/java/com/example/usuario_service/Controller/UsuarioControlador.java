@@ -24,8 +24,8 @@ public class UsuarioControlador {
         return ResponseEntity.ok(usuarioServicio.LoginUsuario(correo, contrasenia));
     }
 
-    @GetMapping("/buscarPorRut/")
-    public ResponseEntity<Usuario> buscarPorRut(@RequestParam String rut) {
+    @GetMapping("/buscarPorRut/{rut}")
+    public ResponseEntity<Usuario> buscarPorRut(@PathVariable String rut) {
         return ResponseEntity.ok(usuarioServicio.BuscarPorRut(rut));
     }
 }
