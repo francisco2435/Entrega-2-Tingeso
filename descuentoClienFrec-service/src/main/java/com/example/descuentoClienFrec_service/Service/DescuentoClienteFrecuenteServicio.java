@@ -60,34 +60,6 @@ public class DescuentoClienteFrecuenteServicio {
         return descuentos;
     }
 
-
-
-    public List<Double> obtenerDescuentoCumpleanios(List<String> rutsIntegrantes, LocalDate fechaReserva) {
-        List<Usuario> usuarios = obtenerUsuariosPorRut(rutsIntegrantes);
-        List<Double> descuentos = new ArrayList<>();
-        int contador = 0;
-
-        for (int i = 0; i < rutsIntegrantes.size(); i++) {
-            if (i >= usuarios.size() || usuarios.get(i) == null || usuarios.get(i).getFechaNacimiento() == null) {
-                descuentos.add(0.0);
-                continue;
-            }
-
-            LocalDate fechaNacimiento = usuarios.get(i).getFechaNacimiento();
-            boolean esCumpleanos = fechaNacimiento.getMonth() == fechaReserva.getMonth() &&
-                    fechaNacimiento.getDayOfMonth() == fechaReserva.getDayOfMonth();
-
-            if (esCumpleanos && contador < 2) {
-                descuentos.add(0.5);
-                contador++;
-            } else {
-                descuentos.add(0.0);
-            }
-        }
-
-        return descuentos;
-    }
-
     public int calcularFrecuencia(LocalDate fecha, String rutIntegrante) {
         // Verificar si el rutIntegrante es null o vacío y lanzar excepción
         if (rutIntegrante == null || rutIntegrante.isEmpty()) {

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -33,5 +34,11 @@ public class TarifaEspecialControlador {
     @GetMapping("/obtenerTarifa")
     public ResponseEntity<TarifaEspecial> obtenerTarifa(@RequestParam Long id) {
         return ResponseEntity.ok(tarifaEspecialServicio.obtenerTarifa(id));
+    }
+
+    @GetMapping("/obtenerDescuentosCumpleaños")
+    public ResponseEntity<List<Double>> hacerDescuentoCumpleanios(@RequestParam List<String> rutsIntegrantes,
+                                                                  @RequestParam LocalDate fechaReserva){
+        return ResponseEntity.ok(tarifaEspecialServicio.obtenerDescuentoCumpleanios(rutsIntegrantes, fechaReserva));
     }
 }

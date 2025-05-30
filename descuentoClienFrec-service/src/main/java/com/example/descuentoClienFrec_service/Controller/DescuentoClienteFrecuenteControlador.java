@@ -22,10 +22,4 @@ public class DescuentoClienteFrecuenteControlador {
                                                                     @RequestParam LocalDate fechaReserva) {
         return ResponseEntity.ok(descuentoClienteFrecuenteServicio.obtenerDescuentoFrecuencia(idReserva, rutsIntegrantes, fechaReserva));
     }
-    
-    @GetMapping("/obtenerDescuentosCumpleaños")
-    public ResponseEntity<List<Double>> hacerDescuentoCumpleanios(@RequestParam List<String> rutsIntegrantes,
-                                                                  @RequestParam LocalDate fechaReserva){
-        return ResponseEntity.ok(descuentoClienteFrecuenteServicio.obtenerDescuentoCumpleanios(rutsIntegrantes, fechaReserva));
-    }
 }

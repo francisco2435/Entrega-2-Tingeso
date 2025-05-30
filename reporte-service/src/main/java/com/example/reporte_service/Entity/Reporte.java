@@ -1,7 +1,7 @@
 package com.example.reporte_service.Entity;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

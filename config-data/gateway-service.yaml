@@ -33,3 +33,19 @@ spring:
           uri: lb://descuentoNumPer-service
           predicates:
             - Path=/descuentoNumPer/**
+        - id: descuentoClienFrec-service
+          uri: lb://descuentoClienFrec-service
+          predicates:
+            - Path=/descuentoClienFrec/**
+        - id: rackSemanal-service
+          uri: lb://rackSemanal-service
+          predicates:
+            - Path=/rackSemanal/**
+        - id: reporte-service
+          uri: lb://reporte-service
+          predicates:
+            - Path=/reporte/**
+        - id: reserva-service
+          uri: lb://reserva-service
+          predicates:
+            - Path=/reserva/**
