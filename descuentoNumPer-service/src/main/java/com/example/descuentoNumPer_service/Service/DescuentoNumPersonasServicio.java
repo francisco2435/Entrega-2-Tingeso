@@ -37,7 +37,7 @@ public class DescuentoNumPersonasServicio {
 
         DescuentoNumPersonas descuentoNumPersonas = new DescuentoNumPersonas(idReserva, numPersonas, descuentos);
 
-        descuentoNumPersonasRepositorio.save(descuentoNumPersonas);
+        //descuentoNumPersonasRepositorio.save(descuentoNumPersonas);
         return descuentos;
     }
 }

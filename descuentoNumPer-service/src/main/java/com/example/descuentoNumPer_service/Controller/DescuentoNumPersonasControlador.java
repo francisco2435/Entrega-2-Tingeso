@@ -14,7 +14,7 @@ public class DescuentoNumPersonasControlador {
     @Autowired
     DescuentoNumPersonasServicio descuentoNumPersonasServicio;
 
-    @PostMapping("/nuevoDescuento")
+    @GetMapping("/nuevoDescuento")
     public List<Double> aplicarDescuentosNumPersonas(@RequestParam Long idReserva,
                                                      @RequestParam int numPersonas){
         return descuentoNumPersonasServicio.aplicarDescuentosNumPersona(idReserva, numPersonas);

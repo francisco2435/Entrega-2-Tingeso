@@ -53,6 +53,7 @@ public class ReservaServicio {
         }
 
         Reserva reserva = new Reserva();
+        reservaRepositorio.save(reserva);
         LocalTime horaFin = horaInicio.plusMinutes(duracionReserva);
         int numKartsDisponibles = obtenerCantidadKartsDisponibles(fechaReserva, horaInicio, horaFin);
         List<Double> montosTotales = new ArrayList<>();
@@ -140,9 +141,6 @@ public class ReservaServicio {
         reserva.setMontoTotalConIva(montoTotalConIva);
         reserva.setTiempoTotal(tiempoTotal);
 
-        // # Guardar reserva en la base de datos #
-        reserva = reservaRepositorio.save(reserva);
-
         // # Enviar comprobante de reserva por correo electrónico #
         enviarComprobanteReserva(reserva, correoCliente);
 
@@ -161,7 +159,7 @@ public class ReservaServicio {
     public List<Double> calcularDescuento(Long idReserva, List<String> rutsIntegrantes, int cantidadIntegrantes, LocalDate fechaReserva) {
 
         List<Double> descuentoCumpleanos = obtenerDescuentoCumpleaneos(rutsIntegrantes, fechaReserva);
-        List<Double> descuentoNumPer = obtenerDescuentoNumPer(cantidadIntegrantes, idReserva);
+        List<Double> descuentoNumPer = obtenerDescuentoNumPer(idReserva, cantidadIntegrantes);
         List<Double> descuentoClientFrec = obtenerDescuentoClientFrec(idReserva, rutsIntegrantes, fechaReserva);
 
         List<Double> descuentosFinales = new ArrayList<>();
@@ -184,7 +182,7 @@ public class ReservaServicio {
     public List<String> obtenerTiposDeDescuento(Long idReserva, List<String> rutsIntegrantes, int cantidadIntegrantes, LocalDate fechaReserva) {
 
         List<Double> descuentoCumpleanos = obtenerDescuentoCumpleaneos(rutsIntegrantes, fechaReserva);
-        List<Double> descuentoNumPer = obtenerDescuentoNumPer(cantidadIntegrantes, idReserva);
+        List<Double> descuentoNumPer = obtenerDescuentoNumPer(idReserva, cantidadIntegrantes);
         List<Double> descuentoClientFrec = obtenerDescuentoClientFrec(idReserva, rutsIntegrantes, fechaReserva);
 
         List<String> tiposDescuento = new ArrayList<>();
@@ -304,12 +302,16 @@ public class ReservaServicio {
         return response.getBody();
     }
 
-    public List<Double> obtenerDescuentoNumPer(int numPersonas, Long idReserva) {
-        String url = "http://descuentoNumPer-service/descuentoNumPer/nuevoDescuento?idReserva={idReserva}&numPersonas={numPersonas}";
+    public List<Double> obtenerDescuentoNumPer(Long idReserva, int numPersonas) {
+        String urlTemplate = "http://descuentoNumPer-service/descuentoNumPer/nuevoDescuento?idReserva={idReserva}&numPersonas={numPersonas}";
+
+        String urlConstruida = urlTemplate
+                .replace("{idReserva}", idReserva.toString())
+                .replace("{numPersonas}", Integer.toString(numPersonas));
 
         ResponseEntity<List<Double>> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
+                urlTemplate,
+                HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<Double>>() {},
                 idReserva,
@@ -330,11 +332,11 @@ public class ReservaServicio {
         }
 
         String url = builder.toUriString();
-
+        System.out.println("URL construida: " + url);
         // llamada POST sin cuerpo, ya que los datos van por parámetros
         ResponseEntity<List<Double>> response = restTemplate.exchange(
                 url,
-                HttpMethod.POST,
+                HttpMethod.GET,
                 null, // sin body
                 new ParameterizedTypeReference<List<Double>>() {}
         );
@@ -382,43 +384,49 @@ public class ReservaServicio {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
         document.addPage(page);
-        PDType1Font font = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        // Establecer la fuente antes de mostrar el texto
-        contentStream.setFont(font, 12);
+
+        // Fuentes
+        PDType1Font fontRegular = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDType1Font fontBold = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
 
         // Título
+        contentStream.setFont(fontBold, 16);
         contentStream.beginText();
         contentStream.newLineAtOffset(50, 750);
         contentStream.showText("Comprobante de Reserva");
         contentStream.endText();
 
         // Información de la reserva
+        contentStream.setFont(fontRegular, 12);
         contentStream.beginText();
         contentStream.newLineAtOffset(50, 720);
         contentStream.showText("ID: " + reserva.getId());
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Nombre reservante: " + reserva.getNombreCliente());
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Fecha de reserva: " + reserva.getFechaReserva().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Hora de reserva: " + reserva.getHoraReserva());
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Número de vueltas: " + reserva.getNumVueltas());
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Tiempo máximo: " + reserva.getTiempoMax() + " minutos");
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Cantidad de personas: " + reserva.getCantidadPersonas());
-
-        contentStream.newLineAtOffset(0, -15);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Tipo de Tarifa: " + reserva.getTipoTarifa());
 
-        contentStream.newLineAtOffset(0, -15);
-        contentStream.showText("Integrantes: ");
+        // Línea divisoria
+        contentStream.newLineAtOffset(0, -25);
+        contentStream.showText("--------------------------------------------");
+        contentStream.newLineAtOffset(0, -20);
+        contentStream.showText("Integrantes:");
+
         for (int i = 0; i < reserva.getCantidadPersonas(); i++) {
-            contentStream.newLineAtOffset(0, -15);
-            contentStream.showText(reserva.getNombres().get(i) + ": " + reserva.getMontosConDescuento());
+            contentStream.newLineAtOffset(20, -15); // Indentación
+            contentStream.showText(reserva.getNombres().get(i) + ": " + reserva.getMontosConDescuento().get(i) + " CLP");
 
             contentStream.newLineAtOffset(0, -15);
             contentStream.showText("Tipo de descuento: " + reserva.getTiposDescuentos().get(i));
@@ -426,13 +434,22 @@ public class ReservaServicio {
             contentStream.newLineAtOffset(0, -15);
             contentStream.showText("Valor del descuento: " + reserva.getDescuentos().get(i));
 
+            contentStream.newLineAtOffset(-20, -15); // Vuelve a margen izquierdo + espacio
         }
 
-        contentStream.newLineAtOffset(0, -15);
+        // Línea divisoria
+        contentStream.newLineAtOffset(0, -10);
+        contentStream.showText("--------------------------------------------");
+
+        // Totales en negrita
+        contentStream.setFont(fontBold, 12);
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Monto total: " + reserva.getMontoTotal());
-        contentStream.newLineAtOffset(0, -15);
+
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("IVA (19%): " + reserva.getValorIva());
-        contentStream.newLineAtOffset(0, -15);
+
+        contentStream.newLineAtOffset(0, -20);
         contentStream.showText("Monto total con IVA: " + reserva.getMontoTotalConIva());
 
         contentStream.endText();

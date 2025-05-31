@@ -5,6 +5,9 @@ import com.example.descuentoClienFrec_service.Model.Reserva;
 import com.example.descuentoClienFrec_service.Model.Usuario;
 import com.example.descuentoClienFrec_service.Repository.DescuentoClienteFrecuenteRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,9 +34,19 @@ public class DescuentoClienteFrecuenteServicio {
         return usuarios;
     }
 
-    public List<Reserva> obtenerReservasEntre(LocalDate inicioMes, LocalDate finMes){
-        List<Reserva> reservas = restTemplate.getForObject("http://reserva-service/reserva/obtenerReservasEntre/"+inicioMes+finMes, List.class);
-        return reservas;
+    public List<Reserva> obtenerReservasEntre(LocalDate inicioMes, LocalDate finMes) {
+        String url = "http://reserva-service/reserva/obtenerReservasEntreFechas?fechaInicio={inicioMes}&fechaFin={finMes}";
+
+        ResponseEntity<List<Reserva>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Reserva>>() {},
+                inicioMes.toString(),
+                finMes.toString()
+        );
+
+        return response.getBody();
     }
 
     public List<Double> obtenerDescuentoFrecuencia(Long idReserva, List<String> rutsIntegrantes, LocalDate fechaReserva){
@@ -55,7 +68,7 @@ public class DescuentoClienteFrecuenteServicio {
 
         DescuentoClienteFrecuente descuentoClienteFrecuente = new DescuentoClienteFrecuente(idReserva, descuentos);
 
-        descuentoClienteFrecuenteRepositorio.save(descuentoClienteFrecuente);
+        //descuentoClienteFrecuenteRepositorio.save(descuentoClienteFrecuente);
 
         return descuentos;
     }

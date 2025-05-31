@@ -17,7 +17,7 @@ public class DescuentoClienteFrecuenteControlador {
     @Autowired
     private DescuentoClienteFrecuenteServicio descuentoClienteFrecuenteServicio;
 
-    @PostMapping("/obtenerDescuentosFrecuencia")
+    @GetMapping("/obtenerDescuentosFrecuencia")
     public ResponseEntity<List<Double>> hacerDescuentoFrecuencia(@RequestParam Long idReserva,
                                                                  @RequestParam List<String> rutsIntegrantes,
                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaReserva) {

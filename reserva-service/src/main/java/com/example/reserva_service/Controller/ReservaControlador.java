@@ -3,6 +3,7 @@ package com.example.reserva_service.Controller;
 import com.example.reserva_service.Entity.Reserva;
 import com.example.reserva_service.Service.ReservaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,10 @@ public class ReservaControlador {
     }
 
     @GetMapping("/obtenerReservasEntreFechas")
-    public ResponseEntity<List<Reserva>> obtenerReservasEntreFechas(@RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin) {
+    public ResponseEntity<List<Reserva>> obtenerReservasEntreFechas(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+
         return ResponseEntity.ok(reservaServicio.obtenerReservasEntreFechas(fechaInicio, fechaFin));
     }
 
