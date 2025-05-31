@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/obtenerRackSemanal")
+@RequestMapping("/rackSemanal")
 public class RackSemanalControlador {
     @Autowired
     RackSemanalServicio rackSemanalServicio;

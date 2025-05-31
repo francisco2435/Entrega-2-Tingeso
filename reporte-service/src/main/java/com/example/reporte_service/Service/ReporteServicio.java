@@ -4,6 +4,9 @@ import com.example.reporte_service.Entity.Reporte;
 import com.example.reporte_service.Model.Reserva;
 import com.example.reporte_service.Repository.ReporteRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,9 +26,19 @@ public class ReporteServicio {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<Reserva> obtenerReservasEntre(LocalDate inicioMes, LocalDate finMes){
-        List<Reserva> reservas = restTemplate.getForObject("http://reserva-service/reserva/obtenerReservasEntre/"+inicioMes+finMes, List.class);
-        return reservas;
+    public List<Reserva> obtenerReservasEntre(LocalDate inicioMes, LocalDate finMes) {
+        String url = "http://reserva-service/reserva/obtenerReservasEntreFechas?fechaInicio={inicioMes}&fechaFin={finMes}";
+
+        ResponseEntity<List<Reserva>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Reserva>>() {},
+                inicioMes.toString(),
+                finMes.toString()
+        );
+
+        return response.getBody();
     }
 
     //Crear reporte según el tipo escogido número de vueltas, tiempo máximo o n° personas
