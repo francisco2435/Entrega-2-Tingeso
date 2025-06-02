@@ -68,7 +68,7 @@ export default function Sidemenu({ open, toggleDrawer }) {
           <ListItemText primary="Home" />
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/reserva")}>
+        <ListItemButton onClick={() => navigate("/calendario")}>
           <ListItemIcon>
           <DateRangeIcon />
           </ListItemIcon>

@@ -1,9 +1,20 @@
 import React, { useState } from "react";
-import { Box, Typography, TextField, Button, CircularProgress, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import tarifaServicio from "../services/tarifa.servicio";
 import { useNavigate } from "react-router-dom";
 
-const CrearTarifa = () => {
+const CrearTarifaEspecial = () => {
   const [nuevaTarifa, setNuevaTarifa] = useState({
     numeroVueltas: "",
     tiempoMax: "",
@@ -11,6 +22,7 @@ const CrearTarifa = () => {
     duracionReserva: "",
     tipo: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -24,42 +36,36 @@ const CrearTarifa = () => {
   };
 
   const handleSubmit = (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null); // Limpiar errores previos
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  // Llamamos al servicio para crear la tarifa
-  tarifaServicio
-    .crearTarifa(nuevaTarifa)
-    .then((response) => {
-      setLoading(false);
-
-      // Verificamos si la respuesta tiene algún dato
-      if (response && response.data) {
-        // Mostrar algún tipo de mensaje o utilizar los datos de la respuesta
-        console.log("Tarifa creada con éxito:", response.data);
-
-        // Redirigir a la vista de tarifas después de crear
-        navigate("/tarifas");
-      } else {
-        setError("La respuesta del servidor no es la esperada.");
-      }
-    })
-    .catch((error) => {
-      setLoading(false);
-      setError("Hubo un error al crear la tarifa. Inténtalo nuevamente.");
-      console.error("Error al crear la tarifa:", error);  // Muestra el error para depuración
-    });
-};
+    tarifaServicio
+      .crearTarifaEspecial(nuevaTarifa)
+      .then((response) => {
+        setLoading(false);
+        if (response && response.data) {
+          console.log("Tarifa especial creada con éxito:", response.data);
+          navigate("/tarifas");
+        } else {
+          setError("La respuesta del servidor no es la esperada.");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setError("Hubo un error al crear la tarifa especial. Inténtalo nuevamente.");
+        console.error("Error al crear la tarifa especial:", error);
+      });
+  };
 
   const handleCancel = () => {
-    navigate("/tarifas"); // Redirigir a la vista de tarifas si se cancela
+    navigate("/tarifas");
   };
 
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Crear Nueva Tarifa
+        Crear Tarifa Especial
       </Typography>
 
       <form onSubmit={handleSubmit}>
@@ -103,7 +109,7 @@ const CrearTarifa = () => {
           type="number"
           required
         />
-        
+
         <FormControl fullWidth margin="normal">
           <InputLabel>Tipo</InputLabel>
           <Select
@@ -112,7 +118,8 @@ const CrearTarifa = () => {
             onChange={handleChange}
             required
           >
-            <MenuItem value="normal">Normal</MenuItem>
+            <MenuItem value="fin de semana">Fin de semana</MenuItem>
+            <MenuItem value="dia especial">Día especial</MenuItem>
           </Select>
         </FormControl>
 
@@ -125,7 +132,7 @@ const CrearTarifa = () => {
             type="submit"
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} /> : "Crear Tarifa"}
+            {loading ? <CircularProgress size={24} /> : "Crear Tarifa Especial"}
           </Button>
           <Button
             variant="outlined"
@@ -141,4 +148,4 @@ const CrearTarifa = () => {
   );
 };
 
-export default CrearTarifa;
+export default CrearTarifaEspecial;

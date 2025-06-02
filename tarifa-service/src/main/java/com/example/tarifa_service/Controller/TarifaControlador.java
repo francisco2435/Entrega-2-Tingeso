@@ -34,4 +34,9 @@ public class TarifaControlador {
     public ResponseEntity<Tarifa> obtenerTarifa(@RequestParam Long id) {
         return ResponseEntity.ok(tarifaServicio.obtenerTarifa(id));
     }
+
+    @GetMapping("/obtenerTarifaPorTipo")
+    public ResponseEntity<List<Tarifa>> obtenerTarifaPorTipo(@RequestParam String tipo) {
+        return ResponseEntity.ok(tarifaServicio.obtenerTarifaPorTipo(tipo));
+    }
 }

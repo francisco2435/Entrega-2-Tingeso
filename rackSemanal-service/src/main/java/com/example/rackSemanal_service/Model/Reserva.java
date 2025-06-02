@@ -11,6 +11,14 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class Reserva {
+    //Atributos para hacer reserva
+    private String rutCliente;
+    private String nombreCliente;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
+    private int tiempoTotal; // en minutos
+
+    @ElementCollection
     private List<String> rutsAmigos;
 
     // Atributos para hacer comprobante
@@ -41,6 +49,46 @@ public class Reserva {
     private double montoTotal;
     private double valorIva;
     private double montoTotalConIva;
+
+    public String getRutCliente() {
+        return rutCliente;
+    }
+
+    public void setRutCliente(String rutCliente) {
+        this.rutCliente = rutCliente;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public LocalTime getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(LocalTime horaFin) {
+        this.horaFin = horaFin;
+    }
+
+    public int getTiempoTotal() {
+        return tiempoTotal;
+    }
+
+    public void setTiempoTotal(int tiempoTotal) {
+        this.tiempoTotal = tiempoTotal;
+    }
 
     public List<String> getRutsAmigos() {
         return rutsAmigos;

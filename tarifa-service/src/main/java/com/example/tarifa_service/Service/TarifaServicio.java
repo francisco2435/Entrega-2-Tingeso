@@ -75,4 +75,8 @@ public class TarifaServicio {
     public Tarifa obtenerTarifa(Long id){
         return tarifaRepositorio.findById(id).get();
     }
+
+    public List<Tarifa> obtenerTarifaPorTipo(String tipo) {
+        return tarifaRepositorio.findByTipo(tipo);
+    }
 }

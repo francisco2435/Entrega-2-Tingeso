@@ -45,4 +45,16 @@ public class TarifaEspecialControlador {
                 tarifaEspecialServicio.obtenerDescuentoCumpleanios(rutsIntegrantes, fechaReserva)
         );
     }
+
+    @GetMapping("/obtenerTipoTarifaPorFecha")
+    public ResponseEntity<String> obtenerTipoTarifaPorFecha(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaReserva) {
+        return ResponseEntity.ok(tarifaEspecialServicio.obtenerTipoTarifaPorFecha(fechaReserva));
+    }
+
+    @GetMapping("/obtenerTarifaPorTipo")
+    public ResponseEntity<List<TarifaEspecial>> obtenerTarifaPorTipo(@RequestParam String tipo) {
+        System.out.println("Tipo recibido: " + tipo);
+        return ResponseEntity.ok(tarifaEspecialServicio.obtenerTarifaPorTipo(tipo));
+    }
 }

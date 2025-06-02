@@ -8,13 +8,9 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import addDays from "date-fns/addDays";
 import es from "date-fns/locale/es";
-import reservaServicio from "../services/reserva.servicio";
+import rackSemanalServicio from "../services/rackSemanal.servicio";
 
-// Localizador para fechas en español
-const locales = {
-  es: es,
-};
-
+const locales = { es };
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -28,11 +24,22 @@ const RackSemanal = () => {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
-    reservaServicio
-      .obtenerReservas()
+    rackSemanalServicio
+      .obtenerRackSemanal()
       .then((res) => {
         const reservas = res.data;
-        const eventosFormateados = reservas.map((reserva) => {
+        console.log("Reservas obtenidas:", reservas);
+        // Filtrar y mapear solo reservas que no tengan datos nulos en los campos usados
+        const eventosFormateados = reservas
+        .filter(
+          (reserva) =>
+            reserva.fechaReserva &&
+            reserva.horaInicio &&
+            reserva.horaFin &&
+            reserva.nombreCliente
+        )
+        .map((reserva) => {
+          // Parseamos fecha y horas para crear objetos Date
           const fechaInicio = new Date(`${reserva.fechaReserva}T${reserva.horaInicio}`);
           const fechaFin = new Date(`${reserva.fechaReserva}T${reserva.horaFin}`);
 
@@ -57,7 +64,6 @@ const RackSemanal = () => {
         Rack Semanal de Reservas
       </Typography>
 
-      {/* Controles para cambiar semana */}
       <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
         <Button variant="outlined" onClick={() => setDate(addDays(date, -7))}>
           Semana anterior
@@ -81,8 +87,8 @@ const RackSemanal = () => {
         onNavigate={setDate}
         style={{ height: 600 }}
         culture="es"
-        min={new Date(0, 0, 0, 10, 0)}  // 10:00 AM
-        max={new Date(0, 0, 0, 22, 0)}  // 10:00 PM
+        min={new Date(0, 0, 0, 10, 0)} // 10:00 AM
+        max={new Date(0, 0, 0, 22, 0)} // 10:00 PM
         components={{ toolbar: () => null }}
       />
     </Paper>

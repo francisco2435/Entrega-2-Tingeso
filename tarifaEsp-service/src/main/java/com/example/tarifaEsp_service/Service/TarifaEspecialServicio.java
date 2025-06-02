@@ -118,4 +118,28 @@ public class TarifaEspecialServicio {
         }
         return usuarios;
     }
+
+    public List<TarifaEspecial> obtenerTarifaPorTipo(String tipo) {
+        return tarifaEspecialRepositorio.findByTipo(tipo);
+    }
+
+    public String obtenerTipoTarifaPorFecha(LocalDate fecha) {
+        if (fecha.getDayOfWeek().getValue() >= 6) {
+            return "fin de semana"; // Fin de semana
+        } else if (obtenerFeriados().contains(fecha)) {
+            return "dia especial"; // Día especial
+        } else {
+            return "normal"; // Tarifa normal
+        }
+    }
+
+    public List<LocalDate> obtenerFeriados() {
+        List<LocalDate> feriados = new ArrayList<>();
+        feriados.add(LocalDate.of(2024, 1, 1)); // Año Nuevo
+        feriados.add(LocalDate.of(2024, 5, 1)); // Día del Trabajador
+        feriados.add(LocalDate.of(2024, 9, 18)); // Independencia de Chile
+        feriados.add(LocalDate.of(2024, 9, 19)); // Día de las Glorias del Ejército
+        feriados.add(LocalDate.of(2024, 10, 31)); // Halloween
+        return feriados;
+    }
 }

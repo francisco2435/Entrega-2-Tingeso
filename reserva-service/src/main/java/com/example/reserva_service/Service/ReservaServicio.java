@@ -52,8 +52,7 @@ public class ReservaServicio {
             throw new IllegalArgumentException("rut ingresado no está registrado");
         }
 
-        Reserva reserva = new Reserva();
-        reservaRepositorio.save(reserva);
+
         LocalTime horaFin = horaInicio.plusMinutes(duracionReserva);
         int numKartsDisponibles = obtenerCantidadKartsDisponibles(fechaReserva, horaInicio, horaFin);
         List<Double> montosTotales = new ArrayList<>();
@@ -101,6 +100,9 @@ public class ReservaServicio {
         if(!comprobarTopeHorario(fechaReserva, horaInicio, horaFin, cantidadPersonas+1)){
             throw new IllegalArgumentException("la reserva tiene tope de horario con otra reserva ya realizada");
         }
+
+        Reserva reserva = new Reserva();
+        reservaRepositorio.save(reserva);
 
         // # Aplicar descuentos y calculo del monto total#
         tiposDescuento = obtenerTiposDeDescuento(reserva.getId(), rutsAmigos, cantidadPersonas, fechaReserva);

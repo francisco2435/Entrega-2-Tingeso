@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -11,6 +11,10 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import reservaServicio from '../services/reserva.servicio';
+import { useTarifa } from "../components/TarifaContext";
+import { useFecha } from "../components/FechaContext";
+import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+
 
 const Reserva = () => {
   const usuario = JSON.parse(localStorage.getItem('usuario')) || {};
@@ -19,7 +23,11 @@ const Reserva = () => {
   const [horaInicio, setHoraInicio] = useState('');
   const [tiempoMax, setTiempoMax] = useState('');
   const [numVueltas, setNumVueltas] = useState('');
-  const [cantidadPersonas, setCantidadPersonas] = useState('');
+  const [precioTarifa, setPrecioTarifa] = useState('');
+  const [duracionReserva, setDuracionReserva] = useState('');
+  const [tipoTarifa, setTipoTarifa] = useState('');
+  const { tarifaSeleccionada } = useTarifa();
+  const { fechaSeleccionada } = useFecha();
 
   const [rutAmigo, setRutAmigo] = useState('');
   const [nombreAmigo, setNombreAmigo] = useState('');
@@ -27,6 +35,10 @@ const Reserva = () => {
   const [nombres, setNombres] = useState([]);
 
   const [mensajeConfirmacion, setMensajeConfirmacion] = useState(false);
+
+  if (!tarifaSeleccionada) {
+    return <p>No hay tarifa seleccionada.</p>;
+  }
 
   const agregarAmigo = () => {
     if (rutAmigo && nombreAmigo) {
@@ -50,28 +62,66 @@ const Reserva = () => {
     const reserva = {
       rutCliente: usuario.rut,
       nombreCliente: usuario.nombre,
+      correoCliente: usuario.correo,
       fechaReserva,
       horaInicio,
       tiempoMax: parseInt(tiempoMax),
       numVueltas: parseInt(numVueltas),
-      cantidadPersonas: parseInt(cantidadPersonas),
+      precioTarifa: parseFloat(precioTarifa),
+      duracionReserva: parseInt(duracionReserva),
+      tipoTarifa,
       rutsAmigos,
       nombres,
     };
 
     try {
-    await reservaServicio.hacerReserva(reserva);
-       setMensajeConfirmacion(true);
-       setFechaReserva('');
-       setHoraInicio('');
-       setTiempoMax('');
-       setNumVueltas('');
-       setCantidadPersonas('');
-       setRutsAmigos([]);
-       setNombres([]);
+      await reservaServicio.hacerReserva(reserva);
+      setMensajeConfirmacion(true);
+      setFechaReserva('');
+      setHoraInicio('');
+      setTiempoMax('');
+      setNumVueltas('');
+      setPrecioTarifa('');
+      setDuracionReserva('');
+      setTipoTarifa('');
+      setRutsAmigos([]);
+      setNombres([]);
     } catch (error) {
-       console.error('Error al realizar la reserva:', error);
+      console.error('Error al realizar la reserva:', error);
     }
+  };
+
+  useEffect(() => {
+    if (fechaSeleccionada) {
+      setFechaReserva(fechaSeleccionada);
+    }
+  }, [fechaSeleccionada]);
+
+  useEffect(() => {
+    if (tarifaSeleccionada) {
+      setTiempoMax(tarifaSeleccionada.tiempoMax || '');
+      setNumVueltas(tarifaSeleccionada.numeroVueltas || '');
+      setPrecioTarifa(tarifaSeleccionada.precio || '');
+      setDuracionReserva(tarifaSeleccionada.duracionReserva || '');
+      setTipoTarifa(tarifaSeleccionada.tipo || '');
+    }
+  }, [tarifaSeleccionada]);
+
+  const generarHorasDisponibles = () => {
+    const horas = [];
+    let inicio = 14;
+    let fin = 22;
+
+    if (tipoTarifa.toLowerCase() === 'fin de semana' || tipoTarifa.toLowerCase() === 'día especial') {
+      inicio = 10;
+    }
+
+    for (let h = inicio; h <= fin; h++) {
+      const hora = h.toString().padStart(2, '0') + ':00';
+      horas.push(hora);
+    }
+
+    return horas;
   };
 
   return (
@@ -88,25 +138,32 @@ const Reserva = () => {
         onChange={(e) => setFechaReserva(e.target.value)}
         sx={{ mb: 2 }}
         InputLabelProps={{ shrink: true }}
+        disabled
       />
 
-      <TextField
-        fullWidth
-        label="Hora de Inicio"
-        type="time"
-        value={horaInicio}
-        onChange={(e) => setHoraInicio(e.target.value)}
-        sx={{ mb: 2 }}
-        InputLabelProps={{ shrink: true }}
-      />
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="hora-inicio-label">Hora de Inicio</InputLabel>
+        <Select
+          labelId="hora-inicio-label"
+          value={horaInicio}
+          label="Hora de Inicio"
+          onChange={(e) => setHoraInicio(e.target.value)}
+        >
+          {generarHorasDisponibles().map((hora) => (
+            <MenuItem key={hora} value={hora}>
+              {hora}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       <TextField
         fullWidth
         label="Tiempo Máximo (minutos)"
         type="number"
         value={tiempoMax}
-        onChange={(e) => setTiempoMax(e.target.value)}
         sx={{ mb: 2 }}
+        disabled
       />
 
       <TextField
@@ -114,17 +171,34 @@ const Reserva = () => {
         label="Número de Vueltas"
         type="number"
         value={numVueltas}
-        onChange={(e) => setNumVueltas(e.target.value)}
         sx={{ mb: 2 }}
+        disabled
       />
 
       <TextField
         fullWidth
-        label="Cantidad de Personas"
+        label="Precio Tarifa"
         type="number"
-        value={cantidadPersonas}
-        onChange={(e) => setCantidadPersonas(e.target.value)}
+        value={precioTarifa}
         sx={{ mb: 2 }}
+        disabled
+      />
+
+      <TextField
+        fullWidth
+        label="Duración Reserva (minutos)"
+        type="number"
+        value={duracionReserva}
+        sx={{ mb: 2 }}
+        disabled
+      />
+
+      <TextField
+        fullWidth
+        label="Tipo de Tarifa"
+        value={tipoTarifa}
+        sx={{ mb: 2 }}
+        disabled
       />
 
       <Typography variant="h6" mt={3}>

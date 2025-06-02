@@ -6,13 +6,13 @@ import {
   Button,
   Typography,
   CircularProgress,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
-import tarifaServicio from "../services/tarifa.servicio";
+import tarifaServicio from "../services/tarifa.servicio"; // Asegúrate de que `modificarTarifaEspecial` y `obtenerTarifaEspecial` estén definidos ahí
 
-const tipos = ["normal", "fin de semana", "feriado"]; 
+const tipos = ["normal", "fin de semana", "dia especial"];
 
-const ModificarTarifa = () => {
+const ModificarTarifaEspecial = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [tarifa, setTarifa] = useState(null);
@@ -20,13 +20,13 @@ const ModificarTarifa = () => {
 
   useEffect(() => {
     tarifaServicio
-      .obtenerTarifa(id)
+      .obtenerTarifaEspecial(id)
       .then((res) => {
         setTarifa(res.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error al obtener tarifa:", error);
+        console.error("Error al obtener tarifa especial:", error);
         setLoading(false);
       });
   }, [id]);
@@ -37,14 +37,14 @@ const ModificarTarifa = () => {
 
   const handleSubmit = () => {
     tarifaServicio
-      .modificarTarifa(tarifa)
+      .modificarTarifaEspecial(tarifa)
       .then(() => {
-        alert("Tarifa modificada exitosamente");
-        navigate("/tarifas"); 
+        alert("Tarifa especial modificada exitosamente");
+        navigate("/tarifas"); // Cambia esto según tu ruta real
       })
       .catch((error) => {
-        console.error("Error al modificar tarifa:", error);
-        alert("Hubo un error al modificar la tarifa.");
+        console.error("Error al modificar tarifa especial:", error);
+        alert("Hubo un error al modificar la tarifa especial.");
       });
   };
 
@@ -59,7 +59,7 @@ const ModificarTarifa = () => {
   return (
     <Box sx={{ maxWidth: 500, mx: "auto", mt: 5 }}>
       <Typography variant="h5" gutterBottom>
-        Modificar Tarifa
+        Modificar Tarifa Especial
       </Typography>
 
       <TextField
@@ -111,9 +111,11 @@ const ModificarTarifa = () => {
         value={tarifa.tipo}
         onChange={handleChange}
       >
-        <MenuItem value="normal">
-            {"normal"}
-        </MenuItem>
+        {tipos.map((tipo) => (
+          <MenuItem key={tipo} value={tipo}>
+            {tipo}
+          </MenuItem>
+        ))}
       </TextField>
 
       <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
@@ -128,4 +130,4 @@ const ModificarTarifa = () => {
   );
 };
 
-export default ModificarTarifa;
+export default ModificarTarifaEspecial;
